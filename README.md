@@ -45,7 +45,7 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
 <details>
   <summary>Expand steps!</summary>
 
-  #### 1. Flash Openwrt following guide [here:](https://github.com/ihrapsa/OctoWrt/tree/main/firmware/OpenWrt_snapshot)
+  #### 1. Flash Openwrt following guide [here:](https://github.com/shivajiva101/OctoWrt/tree/main/firmware/OpenWrt_snapshot)
        Once flashed setup internet access on the box (either Wi-Fi client or wired connection)
   
  <details>
@@ -66,17 +66,18 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
   
   #### 2. Execute extroot script:
   ```
-  cd /tmp
-  wget https://github.com/ihrapsa/OctoWrt/raw/main/scripts/1_format_extroot.sh
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.0-137/scripts/1_format_extroot.sh
   chmod +x 1_format_extroot.sh
   ./1_format_extroot.sh
+
   ```
   #### 3. Execute install script:
   ```
   cd /tmp
-  wget https://github.com/ihrapsa/OctoWrt/raw/main/scripts/2_octoprint_install.sh
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.0-137/scripts/2_octoprint_install.sh
   chmod +x 2_octoprint_install.sh
   ./2_octoprint_install.sh
+
   ```
   
   
@@ -114,27 +115,30 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
 <details>
   <summary>Expand steps!</summary>
   
-* **OpenWrt**: Make sure you've got OpenWrt flashed. Follow guide form [here](https://github.com/ihrapsa/OctoWrt/tree/main/firmware/OpenWrt_snapshot) -> Once flashed setup Wi-Fi client or wired connection for internet access on the box
+* **OpenWrt**: Make sure you've got OpenWrt flashed. Follow guide form [here](https://github.com/shivajiva/OctoWrt/tree/23.05.0-137/firmware/OpenWrt_snapshot) -> Once flashed setup Wi-Fi client or wired connection for internet access on the box
 
-* **Extroot**: execute [this](https://github.com/ihrapsa/KlipperWrt/blob/main/scripts/1_format_extroot.sh) script. Make sure to have a microsd plugged
+* **Extroot**: execute [this](https://github.com/shivajiva101/OctoWrt/blob/23.05.0-137/scripts/1_format_extroot.sh) script. Make sure to have a microsd plugged
   
   ```
   cd ~
-  wget https://github.com/ihrapsa/KlipperWrt/raw/main/scripts/1_format_extroot.sh
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.0-137/scripts/1_format_extroot.sh
   chmod +x 1_format_extroot.sh
   ./1_format_extroot.sh
+
   ```
   
 * **Swap**: 
 
   ```
   opkg update && opkg install swap-utils zram-swap
+
   ```
   ```
   dd if=/dev/zero of=/overlay/swap.page bs=1M count=512;
   mkswap /overlay/swap.page;
   swapon /overlay/swap.page;
   mount -o remount,size=256M /tmp;
+
   ```
   ```
   rm /etc/rc.local;
@@ -147,6 +151,7 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
   mount -o remount,size=256M /tmp
   exit 0
   EOF
+
   ```
   
 </details>
@@ -159,15 +164,19 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
 #### 1. Install OpenWrt dependencies:
 
 ```
+rm /etc/opkg/distfeeds.conf;
+wget https://github.com/shivajiva101/OctoWrt/raw/23.05.0-137/openwrt/distfeeds.conf -P /etc/opkg
 opkg update
 opkg install gcc make unzip htop wget-ssl git-http
-opkg install v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-streamer-www
+opkg install v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-streamer-www ffmpeg
+
 ```
 By default mjpg-streamer comes with username=openwrt and password=openwrt. If you don't want them do:
 
 ```
 uci delete mjpg-streamer.core.username
 uci delete mjpg-streamer.core.password
+
 ```
 
 ------------------------------
@@ -181,13 +190,22 @@ Install python 3 packages
 opkg install python3 python3-pip python3-dev python3-psutil python3-netifaces python3-pillow
 pip install --upgrade setuptools
 pip install --upgrade pip
+pip install virtualenv
+virtualenv venv
+
 ```
  
 --------------------
 
 #### 2. Install Octoprint:
 
-`pip install Octoprint==1.8.1`
+```
+rm -rf src
+git clone https://github.com/shivajiva101/OctoPrint.git src
+cd src
+../venv/bin/pip install .
+
+```
 
 #### 3. Create octoprint service:
   
@@ -207,13 +225,14 @@ pip install --upgrade pip
 
   start_service() {
       procd_open_instance
-      procd_set_param command octoprint serve --iknowwhatimdoing
+      procd_set_param command /root/venv/bin/octoprint serve --iknowwhatimdoing
       procd_set_param respawn
       procd_set_param stdout 1
       procd_set_param stderr 1
       procd_close_instance
   }
   EOF
+
   ```
   </details>
   
@@ -267,48 +286,6 @@ For **webcam** support:
   </details>
   
   #### 8. Timelapse plugin setup
-        
-* _ffmpeg packages_
-  
-  <details> 
-    <summary> Expand steps </summary>
-
-    Before installing these ffmpeg packages delete opkg list :
-
-    ```
-    rm -rf /tmp/opkg-lists
-    ```
-
-    To download the packages use the following commands:  
-
-    ```
-    mkdir /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/Packages -P /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/Packages.gz -P /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/Packages.manifest -P /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/Packages.sig -P /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/alsa-lib_1.2.4-1_mipsel_24kc.ipk -P /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/fdk-aac_2.0.1-4_mipsel_24kc.ipk -P /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/ffmpeg_4.3.2-1_mipsel_24kc.ipk -P /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/ffprobe_4.3.2-1_mipsel_24kc.ipk -P /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/libatomic1_8.4.0-3_mipsel_24kc.ipk -P /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/libbz21.0_1.0.8-1_mipsel_24kc.ipk -P /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/libffmpeg-full_4.3.2-1_mipsel_24kc.ipk -P /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/libgmp10_6.2.1-1_mipsel_24kc.ipk -P /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/libgnutls_3.7.2-1_mipsel_24kc.ipk -P /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/libnettle8_3.6-1_mipsel_24kc.ipk -P /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/libx264_2020-10-26-1_mipsel_24kc.ipk -P /root/ffmpeg;
-    wget https://github.com/ihrapsa/OctoWrt/raw/main/packages/ffmpeg/shine_3.1.1-1_mipsel_24kc.ipk -P /root/ffmpeg;
-    ```
-
-    Files will download to `/root/ffmpeg`  
-    To install them:
-
-    ```
-    cd /root/ffmpeg
-    opkg install *.ipk --force-overwrite
-    ```
-  </details>
 
 * _ffmpeg bin path_
   
