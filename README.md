@@ -73,7 +73,6 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
   ```
   #### 3. Execute install script:
   ```
-  cd /tmp
   wget https://github.com/shivajiva101/OctoWrt/raw/23.05.0-137/scripts/2_octoprint_install.sh
   chmod +x 2_octoprint_install.sh
   ./2_octoprint_install.sh
@@ -171,14 +170,6 @@ opkg install gcc make unzip htop wget-ssl git-http
 opkg install v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-streamer-www ffmpeg
 
 ```
-By default mjpg-streamer comes with username=openwrt and password=openwrt. If you don't want them do:
-
-```
-uci delete mjpg-streamer.core.username
-uci delete mjpg-streamer.core.password
-
-```
-
 ------------------------------
 
 * **Python 3**:
@@ -281,8 +272,7 @@ For **webcam** support:
   - Snapshot URL: `http://your-box-ip:8080/?action=snapshot` 
   
   If webcam not showing, unplug and replug it.  
-  If you don't want webcam authentication you can comment or delete the user and password lines inside `mjpg-streamer` config file. Make sure to restart it after that:  `/etc/init.d/mjpg-streamer restart`
-  
+    
   </details>
   
   #### 8. Timelapse plugin setup
