@@ -70,9 +70,6 @@ wget https://github.com/shivajiva101/OctoWrt/raw/23.05.0-137/openwrt/distfeeds.c
 
 opkg update
 opkg install gcc make unzip htop wget-ssl git-http v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-streamer-www ffmpeg
-uci delete mjpg-streamer.core.username
-uci delete mjpg-streamer.core.password
-uci commit mjpg-streamer
 
 opkg install python3 python3-pip python3-dev python3-psutil python3-pillow python3-tornado
 pip install --upgrade pip
