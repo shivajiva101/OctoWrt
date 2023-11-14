@@ -72,6 +72,8 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
 
   ```
   #### 3. Execute install script:
+  <b>Important:</b> You *need* a stable internet connection for this to succeed.
+  If the script fails try using the manual installation method.
   ```
   wget https://github.com/shivajiva101/OctoWrt/raw/23.05.0-137/scripts/2_octoprint_install.sh
   chmod +x 2_octoprint_install.sh
