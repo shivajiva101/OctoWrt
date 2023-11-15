@@ -45,7 +45,7 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
 <details>
   <summary>Expand steps!</summary>
 
-  #### 1. Flash Openwrt following guide [here:](https://github.com/shivajiva101/OctoWrt/tree/23.05.0-137/firmware/OpenWrt_snapshot)
+  #### 1. Flash Openwrt following guide [here:](https://github.com/shivajiva101/OctoWrt/tree/23.05.0-134/firmware/OpenWrt_snapshot)
        Once flashed setup internet access on the box (either Wi-Fi client or wired connection)
   
  <details>
@@ -66,7 +66,7 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
   
   #### 2. Execute extroot script:
   ```
-  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.0-137/scripts/1_format_extroot.sh
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.0-134/scripts/1_format_extroot.sh
   chmod +x 1_format_extroot.sh
   ./1_format_extroot.sh
 
@@ -75,7 +75,7 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
   <b>Important:</b> You *need* a stable internet connection for this to succeed.
   If the script fails try using the manual installation method.
   ```
-  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.0-137/scripts/2_octoprint_install.sh
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.0-134/scripts/2_octoprint_install.sh
   chmod +x 2_octoprint_install.sh
   ./2_octoprint_install.sh
 
@@ -116,13 +116,13 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
 <details>
   <summary>Expand steps!</summary>
   
-* **OpenWrt**: Make sure you've got OpenWrt flashed. Follow guide from [here](https://github.com/shivajiva101/OctoWrt/tree/23.05.0-137/firmware/OpenWrt_snapshot) -> Once flashed setup Wi-Fi client or wired connection for internet access on the box
+* **OpenWrt**: Make sure you've got OpenWrt flashed. Follow guide from [here](https://github.com/shivajiva101/OctoWrt/tree/23.05.0-134/firmware/OpenWrt_snapshot) -> Once flashed setup Wi-Fi client or wired connection for internet access on the box
 
-* **Extroot**: execute [this](https://github.com/shivajiva101/OctoWrt/blob/23.05.0-137/scripts/1_format_extroot.sh) script. Make sure to have a microsd plugged
+* **Extroot**: execute [this](https://github.com/shivajiva101/OctoWrt/blob/23.05.0-134/scripts/1_format_extroot.sh) script. Make sure to have a microsd plugged
   
   ```
   cd ~
-  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.0-137/scripts/1_format_extroot.sh
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.0-134/scripts/1_format_extroot.sh
   chmod +x 1_format_extroot.sh
   ./1_format_extroot.sh
 
@@ -166,7 +166,7 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
 
 ```
 rm /etc/opkg/distfeeds.conf;
-wget https://github.com/shivajiva101/OctoWrt/raw/23.05.0-137/openwrt/distfeeds.conf -P /etc/opkg
+wget https://github.com/shivajiva101/OctoWrt/raw/23.05.0-134/openwrt/distfeeds.conf -P /etc/opkg
 opkg update
 opkg install gcc make unzip htop wget-ssl git-http
 opkg install v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-streamer-www ffmpeg

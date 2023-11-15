@@ -9,7 +9,7 @@ USE_PROCD=1
 
 start_service() {
     procd_open_instance
-    procd_set_param command octoprint serve --iknowwhatimdoing
+    procd_set_param command /root/venv/bin/octoprint serve --iknowwhatimdoing
     procd_set_param respawn
     procd_set_param stdout 1
     procd_set_param stderr 1
