@@ -194,7 +194,7 @@ virtualenv venv
 
 ```
 rm -rf src
-git clone https://github.com/shivajiva101/OctoPrint.git src
+git clone -b 1.9.3 --single-branch https://github.com/shivajiva101/OctoPrint.git src
 cd src
 ../venv/bin/pip install .
 
