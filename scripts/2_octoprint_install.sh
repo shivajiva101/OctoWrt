@@ -89,7 +89,7 @@ echo " eventually complete!"
 echo " "
 
 echo "Cloning source..."
-git clone https://github.com/shivajiva101/OctoPrint.git src
+git clone -b 1.9.3 --single-branch https://github.com/shivajiva101/OctoPrint.git src
 cd src
 echo "Starting pip install..."
 ../venv/bin/pip install .
