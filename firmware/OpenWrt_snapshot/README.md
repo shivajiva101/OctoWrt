@@ -1,4 +1,4 @@
-# :exclamation: Check Releases page for binaries :exclamation:
+# ⚠️ Check Releases page for binaries ⚠️
 
 ## Flashing OpenWrt:  
 
@@ -10,7 +10,7 @@ Alternative Options:
 1. Rename `*factory.bin` to `cxsw_update.tar.bz2`  
 2. Copy it to the root of a FAT32 formatted microSD card.  
 3. Turn on the device, wait for it to start, then insert the card. The stock firmware reads the `install.sh` script from this archive and flashes the new OpenWrt image.  
-4. `ssh` into it with ethernet `ssh root@192.168.1.1` or get into serial baud: `57600`, enable radio in `/etc/config/wireless`, reboot, the box will create an AP `OpenWrt`- connect to it -> `ssh` and continue Wi-fi internet setup.
+4. The box will create an AP `OpenWrt`- connect to it -> `ssh` and continue Wi-fi internet setup.
 
 **B. Through the Stock firmware UI interface (link)**
 
@@ -26,7 +26,7 @@ Alternative Options:
 
 ## Recovery process  
 If the box is either on stock or Openwrt but unreachable (semi bricked) 
-:exclamation: With the recovery process you can restore stock firmware or install/recover Openwrt firmware regardless of what's already on the box.
+⚠️ With the recovery process you can restore stock firmware or install/recover Openwrt firmware regardless of what's already on the box.
 
 **Recovering to Openwrt**  
 1. Rename the SYSUPGRADE bin to `root_uImage`  
