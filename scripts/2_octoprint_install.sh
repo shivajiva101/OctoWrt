@@ -71,11 +71,11 @@ wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/openwrt/distfeeds.c
 opkg update
 opkg install gcc make unzip htop wget-ssl git-http v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-streamer-www ffmpeg
 
-opkg install python3 python3-pip python3-dev python3-psutil python3-pillow python3-tornado
-pip install --upgrade pip
+opkg install python3 python3-pip python3-dev python3-psutil python3-yaml python3-netifaces
+opkg install python3-pillow python3-tornado python3-markupsafe
 pip install --upgrade setuptools
-pip install virtualenv
-virtualenv venv
+pip install --upgrade pip
+pip install future regex sgmllib3k
 
 echo " "
 echo "   ############################"
@@ -89,10 +89,12 @@ echo " eventually complete!"
 echo " "
 
 echo "Cloning source..."
-git clone https://github.com/shivajiva101/OctoPrint.git src
+git clone --depth 1 -b 1.9.3 https://github.com/OctoPrint/OctoPrint.git src
 cd src
+wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/octoprint/noargon2.patch
+git apply noargon2.patch
 echo "Starting pip install..."
-../venv/bin/pip install .
+pip install .
 cd ~
 
 echo " "
@@ -113,7 +115,7 @@ USE_PROCD=1
 
 start_service() {
     procd_open_instance
-    procd_set_param command /root/venv/bin/octoprint serve --iknowwhatimdoing
+    procd_set_param command octoprint serve --iknowwhatimdoing
     procd_set_param respawn
     procd_set_param stdout 1
     procd_set_param stderr 1

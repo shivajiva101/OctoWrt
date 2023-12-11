@@ -40,73 +40,7 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
 </details>
 
 ------------------
-## Automatic:
-
-<details>
-  <summary>Expand steps!</summary>
-
-  #### 1. Flash Openwrt following guide [here:](https://github.com/shivajiva101/OctoWrt/tree/23.05.2-137/firmware/OpenWrt_snapshot)
-       Once flashed setup internet access on the box (either Wi-Fi client or wired connection)
-  
- <details>
-  <summary>Expand Internet setup!</summary>
- 
-- Make sure you've flahsed/sysupgraded latest `.bin` file from `/Firmware/OpenWrt_snapshot/` or from latest release.
-- Connect to the `OpenWrt` access point
-- Access LuCi web interface and log in on `192.168.1.1:81`
-- _(**optional** but recommended)_ Add a password to the `OctoWrt` access point: `Wireless` -> Under wireless overview `EDIT` the `OpenWrt` interface -> `Wireless Security` -> Choose an encryption -> set a password -> `Save` -> `Save & Apply`
-- _(**optional** but recommended)_ Add a password: `System` -> `Administration` -> `Router Password`
-- ❗If your home network subnet is on 1 (192.168.1.x), in order to avoid any ip conflicts, change the static ip of the box LAN from 192.168.1.1 to something like 192.168.3.1. To do that access the luci webinterface -> `Network` -> `Interfaces` and edit the static ip -> `Save` -> press the down arow on the Save&Apply button -> `Apply Unchecked`. You can now access luci on the new ip and continue configureing Client setup. 
-- Connect as a client to your Internet router: `Network` -> `Wireless` -> `SCAN` -> `Join Network` -> check `Lock to BSSID` -> `Create/Assign Firewall zone` then under `custom` type `wwan` enter -> `Submit` -> `Save` -> `Dropdown arrow -> Apply Unchecked` -> `Apply Unchecked`
-- Connect back to your main internet router and find the new box's ip inside the `DHCP` list.
-- ❗  Access the terminal tab (`Services` -> `Terminal`) ❗ If terminal tab is not working go to `Config` tab and change `Interface` to the interface you are connecting through the box (your wireless router SSID for example) -> `Save & Apply`.
-- Proceed with step 2
-   
-  </details>
-  
-  #### 2. Execute extroot script:
-  ```
-  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/scripts/1_format_extroot.sh
-  chmod +x 1_format_extroot.sh
-  ./1_format_extroot.sh
-
-  ```
-  #### 3. Execute install script:
-  <b>Important:</b> You *need* a stable internet connection for this to succeed.
-  If the script fails try using the manual installation method.
-  ```
-  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/scripts/2_octoprint_install.sh
-  chmod +x 2_octoprint_install.sh
-  ./2_octoprint_install.sh
-
-  ```
-  
-  
-  #### 4. Access Octoprint UI on port 5000
-  
-  ```
-  http://box-ip:5000
-  ```
-  
-  When prompted use the following **server commands**:
-
-    - Restart OctoPrint : `/etc/init.d/octoprint restart`  
-    - Restart system : `reboot`  
-    - Shutdown system : `poweroff`  
-
-  For **webcam** support:  
-  
-  `/etc/config/mjpg-streamer` is the configuration file. Modify that to change resolution, fps, user, pass etc.  
-  
-  Inside OctoPrint snapshot and stream fields add the following:  
-  - Stream URL: `http://your-box-ip:8080/?action=stream`  
-  - Snapshot URL: `http://your-box-ip:8080/?action=snapshot` 
-  - ffmpeg binary path as: `/usr/bin/ffmpeg`
-  
-  
-</details>
-  
-## Manual:
+## Manual Installation:
 
 <details>
   <summary>Expand steps!</summary>
@@ -116,9 +50,9 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
 <details>
   <summary>Expand steps!</summary>
   
-* **OpenWrt**: Make sure you've got OpenWrt flashed. Follow guide from [here](https://github.com/shivajiva101/OctoWrt/tree/23.05.2-137/firmware/OpenWrt_snapshot) -> Once flashed setup Wi-Fi client or wired connection for internet access on the box
+* **OpenWrt**: Make sure you have OpenWrt flashed to the box before proceeding. Follow guide from [here](https://github.com/shivajiva101/OctoWrt/tree/23.05.2-137/firmware/OpenWrt_snapshot) -> Once flashed setup a wired connection preferrably or a wifi connection so the hardware has internet access. This is necessary in order to fetch the required dependencies.
 
-* **Extroot**: execute [this](https://github.com/shivajiva101/OctoWrt/blob/23.05.2-137/scripts/1_format_extroot.sh) script. Make sure to have a microsd plugged
+* **Extroot**: First execute [this](https://github.com/shivajiva101/OctoWrt/blob/23.05.2-137/scripts/1_format_extroot.sh) script. Make sure you have a microsd card inserted as this step creates an extroot filesytem overlay on the card to expand the available space. Here's the code to fetch the script and run it.
   
   ```
   cd ~
@@ -128,12 +62,8 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
 
   ```
   
-* **Swap**: 
+* **Swap**: Next step is to create a swapfile on the newly created overlay.
 
-  ```
-  opkg update && opkg install swap-utils zram-swap
-
-  ```
   ```
   dd if=/dev/zero of=/overlay/swap.page bs=1M count=512;
   mkswap /overlay/swap.page;
@@ -146,9 +76,9 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
   cat << "EOF" > /etc/rc.local
   # Put your custom commands here that should be executed once
   # the system init finished. By default this file does nothing.
-  ###activate the swap file on the SD card  
-  swapon /overlay/swap.page  
-  ###expand /tmp space  
+  ### activate the swap file on the SD card
+  swapon /overlay/swap.page
+  ### expand /tmp space
   mount -o remount,size=256M /tmp
   exit 0
   EOF
@@ -163,10 +93,14 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
   <summary>Expand steps!</summary>
 
 #### 1. Install OpenWrt dependencies:
-
+Now you can setup the correct package feeds. OpenWrt doesn't include WB01 hardware currently so there is a mismatch in the kernel version when using their repository for the core packages. Instead you are going to use the core packages created when this releases firmware was compiled and subsequently uploaded to this branch. This ensures all kernel modules match the kernel signature and can be installed through opkg, making it more extensible to other 3D printers.
 ```
 rm /etc/opkg/distfeeds.conf;
 wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/openwrt/distfeeds.conf -P /etc/opkg
+```
+
+Next step is to update opkg from the new distfeeds.conf and install the dependencies
+```
 opkg update
 opkg install gcc make unzip htop wget-ssl git-http
 opkg install v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-streamer-www ffmpeg
@@ -176,31 +110,36 @@ opkg install v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-st
 
 * **Python 3**:
 
-⚠️ _It is recommended to use the python 3 approach since python 2 got deprecated since January 1st, 2020. However, if you want older versions of Octoprint, python 2 approach might be the only way._
+⚠️ _It is recommended to use the python 3 approach since python 2 got deprecated on January 1st, 2020. However, if you want older versions of Octoprint, python 2 approach might be the only way._
 
-Install python 3 packages
+Install python 3 packages.
 ```
-opkg install python3 python3-pip python3-dev python3-psutil python3-netifaces python3-pillow
+opkg install python3 python3-pip python3-dev python3-psutil python3-yaml python3-netifaces
+opkg install python3-pillow python3-tornado python3-markupsafe
 pip install --upgrade setuptools
 pip install --upgrade pip
-pip install virtualenv
-virtualenv venv
+pip install future regex sgmllib3k
 
 ```
  
 --------------------
 
-#### 2. Install Octoprint:
-
+#### 2. Fetch Octoprint:
+Next step is cloning OctoPrint and then patching it to remove the argon2-cffi dependency that OpenWrt cannot fulfil.
 ```
-rm -rf src
-git clone https://github.com/shivajiva101/OctoPrint.git src
+git clone --depth 1 -b 1.9.3 https://github.com/OctoPrint/OctoPrint.git src
 cd src
-../venv/bin/pip install .
+wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/octoprint/noargon2.patch
+git apply noargon2.patch
+```
+#### 3. Install OctoPrint:
+If you are running this step again due to a failed previous attempt it's essential that the current directory is ~/src before executing the command!
+```
+pip install .
 
 ```
 
-#### 3. Create octoprint service:
+#### 4. Create octoprint service:
   
   <details>
     <summary> Expand </summary>
@@ -218,7 +157,7 @@ cd src
 
   start_service() {
       procd_open_instance
-      procd_set_param command /root/venv/bin/octoprint serve --iknowwhatimdoing
+      procd_set_param command octoprint serve --iknowwhatimdoing
       procd_set_param respawn
       procd_set_param stdout 1
       procd_set_param stderr 1
@@ -229,27 +168,27 @@ cd src
   ```
   </details>
   
-#### 4. Make it executable:
+#### 5. Make it executable:
 
 ```
 chmod +x /etc/init.d/octoprint
 ```
-#### 5. Enable the service:
+#### 6. Enable the service:
 
 ```
 service octoprint enable
 ``` 
 
-#### 6. Reboot and wait a while
+#### 7. Reboot and wait a while
 
 ```
 reboot
 ```
 
 ▶️ _**Note!**_  
-_Booting on the last versions takes a while (~5 minutes). Once booted however, everything works as expected. If you care that much about this you can install older versions (v1.0.0 for example) that are much lighter but are not plugin enabled. Only Temps, Control, Webcam and Gcode preview._
+_Booting the latest versions of OctoPrint takes a while (~5 minutes) and even longer on the first boot after installation when OctoPrint will configure itself. Once booted however, everything works as expected. If you care that much about this you can install older versions (v1.0.0 for example) that are much lighter but are not plugin enabled. Only Temps, Control, Webcam and Gcode preview._
   
-#### 7. First setup
+#### 8. First setup
   
 <details>
   <summary> Expand steps </summary>
@@ -277,7 +216,7 @@ For **webcam** support:
     
   </details>
   
-  #### 8. Timelapse plugin setup
+  #### 9. Timelapse plugin setup
 
 * _ffmpeg bin path_
   
@@ -296,7 +235,71 @@ For **webcam** support:
 
 </details>
 
--------------------------
+## Automatic Installation:
+
+<details>
+  <summary>Expand steps!</summary>
+
+  #### 1. Flash Openwrt following guide [here:](https://github.com/shivajiva101/OctoWrt/tree/23.05.2-137/firmware/OpenWrt_snapshot)
+       Once flashed setup internet access on the box (either Wi-Fi client or wired connection)
+
+ <details>
+  <summary>Expand Internet setup!</summary>
+
+- Make sure you've flahsed/sysupgraded latest `.bin` file from latest release.
+- Connect to the `OpenWrt` access point
+- Access LuCi web interface and log in on `192.168.1.1:81`
+- _(**optional** but recommended)_ Add a password to the `OctoWrt` access point: `Wireless` -> Under wireless overview `EDIT` the `OpenWrt` interface -> `Wireless Security` -> Choose an encryption -> set a password -> `Save` -> `Save & Apply`
+- _(**optional** but recommended)_ Add a password: `System` -> `Administration` -> `Router Password`
+- ❗If your home network subnet is on 1 (192.168.1.x), in order to avoid any ip conflicts, change the static ip of the box LAN from 192.168.1.1 to something like 192.168.3.1. To do that access the luci webinterface -> `Network` -> `Interfaces` and edit the static ip -> `Save` -> press the down arow on the Save&Apply button -> `Apply Unchecked`. You can now access luci on the new ip and continue configureing Client setup.
+- Connect as a client to your Internet router: `Network` -> `Wireless` -> `SCAN` -> `Join Network` -> check `Lock to BSSID` -> `Create/Assign Firewall zone` then under `custom` type `wwan` enter -> `Submit` -> `Save` -> `Dropdown arrow -> Apply Unchecked` -> `Apply Unchecked`
+- Connect back to your main internet router and find the new box's ip inside the `DHCP` list.
+- ❗  Access the terminal tab (`Services` -> `Terminal`) ❗ If terminal tab is not working go to `Config` tab and change `Interface` to the interface you are connecting through the box (your wireless router SSID for example) -> `Save & Apply`.
+- Proceed with step 2
+
+  </details>
+
+  #### 2. Execute extroot script:
+  ```
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/scripts/1_format_extroot.sh
+  chmod +x 1_format_extroot.sh
+  ./1_format_extroot.sh
+
+  ```
+  #### 3. Execute install script:
+  <b>Important:</b> You *need* a stable internet connection for this to succeed.
+  If the script fails try using the manual installation method.
+  ```
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/scripts/2_octoprint_install.sh
+  chmod +x 2_octoprint_install.sh
+  ./2_octoprint_install.sh
+
+  ```
+
+
+  #### 4. Access Octoprint UI on port 5000
+
+  ```
+  http://box-ip:5000
+  ```
+
+  When prompted use the following **server commands**:
+
+    - Restart OctoPrint : `/etc/init.d/octoprint restart`
+    - Restart system : `reboot`
+    - Shutdown system : `poweroff`
+
+  For **webcam** support:
+
+  `/etc/config/mjpg-streamer` is the configuration file. Modify that to change resolution, fps, user, pass etc.
+
+  Inside OctoPrint snapshot and stream fields add the following:
+  - Stream URL: `http://your-box-ip:8080/?action=stream`
+  - Snapshot URL: `http://your-box-ip:8080/?action=snapshot`
+  - ffmpeg binary path as: `/usr/bin/ffmpeg`
+
+
+</details>
 
 ## 🔝 Credits:
 

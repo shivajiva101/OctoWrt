@@ -1,0 +1,307 @@
+From d1654226a9002480788ae92af33433112c6bda45 Mon Sep 17 00:00:00 2001
+Message-Id: <d1654226a9002480788ae92af33433112c6bda45.1700236164.git.shivajiva101@hotmail.com>
+From: shivajiva101 <shivajiva101@hotmail.com>
+Date: Thu, 9 Nov 2023 18:22:02 +0000
+Subject: [PATCH] Add OctoWrt development
+
+Cherry pick ihrapsa's OctoWrt development code to v23.05.0
+---
+ package/base-files/files/bin/config_generate  |   2 +-
+ package/base-files/files/etc/banner           |  10 +-
+ .../mac80211/files/lib/wifi/mac80211.sh       |   4 +-
+ .../services/uhttpd/files/uhttpd.config       |   4 +-
+ .../ramips/dts/mt7628an_creality_wb-01.dts    | 126 ++++++++++++++++++
+ target/linux/ramips/image/mt76x8.mk           |  36 +++++
+ .../mt76x8/base-files/etc/board.d/01_leds     |   3 +
+ .../mt76x8/base-files/etc/board.d/02_network  |   2 +
+ 8 files changed, 177 insertions(+), 10 deletions(-)
+
+diff --git a/package/base-files/files/bin/config_generate b/package/base-files/files/bin/config_generate
+index be21d0079a..2ba4ab9c8f 100755
+--- a/package/base-files/files/bin/config_generate
++++ b/package/base-files/files/bin/config_generate
+@@ -311,7 +311,7 @@ generate_static_system() {
+ 	uci -q batch <<-EOF
+ 		delete system.@system[0]
+ 		add system system
+-		set system.@system[-1].hostname='OpenWrt'
++		set system.@system[-1].hostname='OctoWrt'
+ 		set system.@system[-1].timezone='UTC'
+ 		set system.@system[-1].ttylogin='0'
+ 		set system.@system[-1].log_size='64'
+diff --git a/package/base-files/files/etc/banner b/package/base-files/files/etc/banner
+index f3af3c014f..135048b726 100644
+--- a/package/base-files/files/etc/banner
++++ b/package/base-files/files/etc/banner
+@@ -1,8 +1,8 @@
+-  _______                     ________        __
+- |       |.-----.-----.-----.|  |  |  |.----.|  |_
+- |   -   ||  _  |  -__|     ||  |  |  ||   _||   _|
+- |_______||   __|_____|__|__||________||__|  |____|
+-          |__| W I R E L E S S   F R E E D O M
++ _______        __          ________        __
++ |       |.----.|  |_.-----.|  |  |  |.----.|  |_
++ |   -   ||  __||   _|  _  ||  |  |  ||   _||   _|
++ |_______||____||____|_____||________||__|  |____|
++  W I R E L E S S   3 D   P R I N T I N G
+  -----------------------------------------------------
+  %D %V, %C
+  -----------------------------------------------------
+diff --git a/package/kernel/mac80211/files/lib/wifi/mac80211.sh b/package/kernel/mac80211/files/lib/wifi/mac80211.sh
+index e24a2a634e..6d1ebda266 100644
+--- a/package/kernel/mac80211/files/lib/wifi/mac80211.sh
++++ b/package/kernel/mac80211/files/lib/wifi/mac80211.sh
+@@ -203,13 +203,13 @@ detect_mac80211() {
+ 			set wireless.${name}.channel=${channel}
+ 			set wireless.${name}.band=${mode_band}
+ 			set wireless.${name}.htmode=$htmode
+-			set wireless.${name}.disabled=1
++			set wireless.${name}.disabled=0
+ 
+ 			set wireless.default_${name}=wifi-iface
+ 			set wireless.default_${name}.device=${name}
+ 			set wireless.default_${name}.network=lan
+ 			set wireless.default_${name}.mode=ap
+-			set wireless.default_${name}.ssid=OpenWrt
++			set wireless.default_${name}.ssid=OctoWrt
+ 			set wireless.default_${name}.encryption=none
+ EOF
+ 		uci -q commit wireless
+diff --git a/package/network/services/uhttpd/files/uhttpd.config b/package/network/services/uhttpd/files/uhttpd.config
+index a9b8ff3d15..b7d5afbaa9 100644
+--- a/package/network/services/uhttpd/files/uhttpd.config
++++ b/package/network/services/uhttpd/files/uhttpd.config
+@@ -2,8 +2,8 @@
+ config uhttpd main
+ 
+ 	# HTTP listen addresses, multiple allowed
+-	list listen_http	0.0.0.0:80
+-	list listen_http	[::]:80
++	list listen_http	0.0.0.0:81
++	list listen_http	[::]:81
+ 
+ 	# HTTPS listen addresses, multiple allowed
+ 	list listen_https	0.0.0.0:443
+diff --git a/target/linux/ramips/dts/mt7628an_creality_wb-01.dts b/target/linux/ramips/dts/mt7628an_creality_wb-01.dts
+new file mode 100644
+index 0000000000..d81941847d
+--- /dev/null
++++ b/target/linux/ramips/dts/mt7628an_creality_wb-01.dts
+@@ -0,0 +1,126 @@
++// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
++
++#include "mt7628an.dtsi"
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
++
++/ {
++	compatible = "creality,wb-01", "mediatek,mt7628an-soc";
++	model = "Creality WB-01";
++
++	aliases {
++		led-boot = &led_status;
++		led-failsafe = &led_status;
++		led-upgrade = &led_status;
++		led-running = &led_status;
++		label-mac-device = &wmac;
++	};
++
++	keys {
++		compatible = "gpio-keys";
++
++		reset {
++			label = "reset";
++			gpios = <&gpio 38 GPIO_ACTIVE_LOW>;
++			linux,code = <KEY_RESTART>;
++		};
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		lan {
++			label = "blue:lan";
++			gpios = <&gpio 43 GPIO_ACTIVE_LOW>;
++		};
++
++		wlan2g {
++			label = "yellow:wlan2g";
++			gpios = <&gpio 44 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "phy0tpt";
++		};
++
++		led_status: status {
++			label = "green:status";
++			gpios = <&gpio 42 GPIO_ACTIVE_LOW>;
++		};
++
++		sd {
++			label = "red:sd";
++			gpios = <&gpio 40 GPIO_ACTIVE_LOW>;
++		};
++	};
++};
++
++&spi0 {
++	status = "okay";
++
++	flash@0 {
++		compatible = "jedec,spi-nor";
++		reg = <0>;
++		spi-max-frequency = <40000000>;
++
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition@0 {
++				label = "u-boot";
++				reg = <0x0 0x30000>;
++				read-only;
++			};
++
++			partition@30000 {
++				label = "u-boot-env";
++				reg = <0x30000 0x10000>;
++				read-only;
++			};
++
++			factory: partition@40000 {
++				label = "factory";
++				reg = <0x40000 0x10000>;
++				read-only;
++			};
++
++			partition@50000 {
++				compatible = "denx,uimage";
++				label = "firmware";
++				reg = <0x50000 0xfb0000>;
++			};
++		};
++	};
++};
++
++&state_default {
++	gpio {
++		groups = "wdt", "p3led_an", "p1led_an", "p0led_an", "wled_an";
++		function = "gpio";
++	};
++};
++
++&wmac {
++	status = "okay";
++	mediatek,mtd-eeprom = <&factory 0x0>;
++};
++
++&ethernet {
++	nvmem-cells = <&macaddr_factory_28>;
++	nvmem-cell-names = "mac-address";
++};
++
++&factory {
++	compatible = "nvmem-cells";
++	#address-cells = <1>;
++	#size-cells = <1>;
++
++	macaddr_factory_28: macaddr@28 {
++		reg = <0x28 0x6>;
++	};
++};
++
++&sdhci {
++	status = "okay";
++	mediatek,cd-low;
++};
+diff --git a/target/linux/ramips/image/mt76x8.mk b/target/linux/ramips/image/mt76x8.mk
+index 816009ac18..9e0aba3059 100644
+--- a/target/linux/ramips/image/mt76x8.mk
++++ b/target/linux/ramips/image/mt76x8.mk
+@@ -6,6 +6,26 @@ include ./common-tp-link.mk
+ 
+ DEFAULT_SOC := mt7628an
+ 
++define Build/creality_wb-01-factory
++  echo '#!/bin/sh' > $@.install.sh
++  echo 'kernel_size=851968' >> $@.install.sh
++  echo 'file=$$2/factory.bin' >> $@.install.sh
++  echo 'file_size=$$(wc -c < $$file)' >> $@.install.sh
++  echo 'fs_size=$$((file_size - kernel_size))' >> $@.install.sh
++  echo 'mtd_write -o 0 -l $$kernel_size write $$file Kernel' \
++    >> $@.install.sh
++  echo 'mtd_write -r -o $$kernel_size -l $$fs_size write $$file RootFS' \
++    >> $@.install.sh
++
++  tar cjf $@.tar.bz2 -C $(dir $@)  \
++    --transform="flags=r;s|$(notdir $@.install.sh)|install.sh|" \
++    --transform="flags=r;s|$(notdir $@)|factory.bin|" \
++    $(notdir $@ $@.install.sh) \
++
++  mv $@.tar.bz2 $@
++  rm $@.install.sh
++endef
++
+ define Build/elecom-header
+ 	$(eval model_id=$(1))
+ 	( \
+@@ -147,6 +167,22 @@ define Device/comfast_cf-wr758ac-v2
+ endef
+ TARGET_DEVICES += comfast_cf-wr758ac-v2
+ 
++define Device/creality_wb-01
++  IMAGE_SIZE := 16064k
++  IMAGES += factory.bin
++  IMAGE/factory.bin := $$(sysupgrade_bin) | creality_wb-01-factory
++  DEVICE_VENDOR := Creality
++  DEVICE_MODEL := WB-01
++  DEVICE_PACKAGES := kmod-usb2 kmod-tun kmod-usb-ohci kmod-sdhci-mt7620 kmod-fs-ext4 kmod-usb-storage \
++         kmod-usb-uhci kmod-usb-acm kmod-usb-serial kmod-usb-serial-ch341 \
++         kmod-usb-serial-cp210x kmod-usb-serial-ftdi kmod-usb-serial-pl2303 \
++         kmod-video-core kmod-video-gspca-core kmod-video-gspca-zc3xx \
++         kmod-video-uvc kmod-video-videobuf2 kmod-sound-core \
++         kmod-zram kmod-lib-lz4 kmod-lib-zstd \
++         block-mount e2fsprogs swap-utils fdisk
++endef
++TARGET_DEVICES += creality_wb-01
++
+ define Device/cudy_wr1000
+   IMAGE_SIZE := 7872k
+   IMAGES += factory.bin
+diff --git a/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds b/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds
+index 792bd13ebc..85defc3f1c 100644
+--- a/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds
++++ b/target/linux/ramips/mt76x8/base-files/etc/board.d/01_leds
+@@ -19,6 +19,9 @@ netgear,r6120)
+ 	ucidef_set_led_switch "lan" "lan" "green:lan" "switch0" "0xf"
+ 	ucidef_set_led_switch "wan" "wan" "green:wan" "switch0" "0x10"
+ 	;;
++creality,wb-01)
++	ucidef_set_led_netdev "lan" "lan" "blue:lan" "eth0"
++	;;
+ cudy,wr1000)
+ 	ucidef_set_led_switch "wan" "wan" "blue:wan" "switch0" "0x10"
+ 	ucidef_set_led_switch "lan1" "lan1" "blue:lan1" "switch0" "0x08"
+diff --git a/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network b/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network
+index 6bcdea971b..ad786c6f8b 100644
+--- a/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network
++++ b/target/linux/ramips/mt76x8/base-files/etc/board.d/02_network
+@@ -9,6 +9,7 @@ ramips_setup_interfaces()
+ 
+ 	case $board in
+ 	alfa-network,awusfree1|\
++	creality,wb-01|\
+ 	d-team,pbr-d1|\
+ 	dlink,dap-1325-a1|\
+ 	glinet,microuter-n300|\
+@@ -218,6 +219,7 @@ ramips_setup_macs()
+ 		lan_mac=$(mtd_get_mac_binary factory 0xe000)
+ 		wan_mac=$(macaddr_add "$lan_mac" 1)
+                 ;;
++	creality,wb-01|\
+ 	cudy,wr1000|\
+ 	hilink,hlk-7628n|\
+ 	hilink,hlk-7688a|\
+-- 
+2.39.2
+
