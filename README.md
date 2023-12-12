@@ -97,6 +97,7 @@ Now you can setup the correct package feeds. OpenWrt doesn't include WB01 hardwa
 ```
 rm /etc/opkg/distfeeds.conf;
 wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/openwrt/distfeeds.conf -P /etc/opkg
+
 ```
 
 Next step is to update opkg from the new distfeeds.conf and install the dependencies
@@ -131,6 +132,7 @@ git clone --depth 1 -b 1.9.3 https://github.com/OctoPrint/OctoPrint.git src
 cd src
 wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/octoprint/noargon2.patch
 git apply noargon2.patch
+
 ```
 #### 3. Install OctoPrint:
 If you are running this step again due to a failed previous attempt it's essential that the current directory is ~/src before executing the command!
@@ -172,17 +174,20 @@ pip install .
 
 ```
 chmod +x /etc/init.d/octoprint
+
 ```
 #### 6. Enable the service:
 
 ```
 service octoprint enable
+
 ``` 
 
 #### 7. Reboot and wait a while
 
 ```
 reboot
+
 ```
 
 ▶️ _**Note!**_  
