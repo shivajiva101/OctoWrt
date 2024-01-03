@@ -103,7 +103,7 @@ wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/openwrt/distfeeds.c
 Next step is to update opkg from the new distfeeds.conf and install the dependencies
 ```
 opkg update
-opkg install gcc make unzip htop wget-ssl git-http
+opkg install gcc make unzip htop wget-ssl git-http kmod-video-uvc luci-app-mjpg-streamer
 opkg install v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-streamer-www ffmpeg
 
 ```
@@ -212,7 +212,7 @@ When prompted use thefollowing **server commands**:
 
 For **webcam** support:  
   
-  `/etc/config/mjpg-streamer` is the configuration file. Modify that to change resolution, fps, user, pass etc.  
+  Use Luci Services->MJPG-Streamer to enable & modify resolution, fps, user, pass etc.  
   Inside OctoPrint snapshot and stream fields add the following:
   - Stream URL: `http://your-box-ip:8080/?action=stream`  
   - Snapshot URL: `http://your-box-ip:8080/?action=snapshot` 
