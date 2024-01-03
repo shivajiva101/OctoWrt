@@ -69,7 +69,7 @@ rm /etc/opkg/distfeeds.conf;
 wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/openwrt/distfeeds.conf -P /etc/opkg
 
 opkg update
-opkg install gcc make unzip htop wget-ssl git-http v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-streamer-www ffmpeg
+opkg install gcc make unzip htop wget-ssl git-http kmod-video-uvc luci-app-mjpg-streamer v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-streamer-www ffmpeg
 
 opkg install python3 python3-pip python3-dev python3-psutil python3-yaml python3-netifaces
 opkg install python3-pillow python3-tornado python3-markupsafe
