@@ -296,7 +296,7 @@ For **webcam** support:
 
   For **webcam** support:
 
-  `/etc/config/mjpg-streamer` is the configuration file. Modify that to change resolution, fps, user, pass etc.
+  Use Luci Services->MJPG-Streamer to enable & modify resolution, fps, user, pass etc.
 
   Inside OctoPrint snapshot and stream fields add the following:
   - Stream URL: `http://your-box-ip:8080/?action=stream`
