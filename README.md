@@ -19,7 +19,7 @@ A router box device released by Creality meant to add cloud control to your prin
 
 **Specifications:**
 
- (_taken form figgyc's commit_)
+ (_taken from figgyc's commit_)
 
 - **SoC**: MediaTek MT7688AN @ 580 MHz
 - **Flash**: BoyaMicro BY25Q128AS (16 MiB, SPI NOR)
