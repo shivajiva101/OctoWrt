@@ -4,7 +4,7 @@
 <img height=100 src="img/OctoPrint+OpenWrt.png">
 </p>
 
-A guide to install OctoPrint on the Creality WiFi Box or similar OpenWrt devices.
+A guide to installing OctoPrint on the Creality WiFi Box or similar OpenWrt devices.
 
 ------------------
 
@@ -13,19 +13,21 @@ A guide to install OctoPrint on the Creality WiFi Box or similar OpenWrt devices
 <details>
   <summary>Click to expand info!</summary>
 
-[<img align=center src="https://user-images.githubusercontent.com/40600040/128502047-f25d9156-31a8-4bc9-b0ed-45200cdfe411.png">](https://www.creality.com/goods-detail/creality-box-3d-printer)  
-  = A router box device released by Creality meant to add cloud control to your printer. Comes with closed source and proprietary software. However, some people might not like that.
+<img align=center src="https://user-images.githubusercontent.com/40600040/128502047-f25d9156-31a8-4bc9-b0ed-45200cdfe411.png">
+
+A router box device released by Creality meant to add cloud control to your printer. Comes with closed source and proprietary software. However, some people might not like that.
 
 **Specifications:**
 
  (_taken form figgyc's commit_)
 
-- **SoC**: MediaTek MT7688AN @ 580 MHz  
-- **Flash**: BoyaMicro BY25Q128AS (16 MiB, SPI NOR)  
-- **RAM**: 128 MiB DDR2 (Winbond W971GG6SB-25)  
-- **Peripheral**: Genesys Logic GL850G 2 port USB 2.0 hub  
-- **I/O**: 1x 10/100 Ethernet port, microSD SD-XC Class 10 slot, 4x LEDs, 2x USB 2.0 ports, micro USB input (for power only), reset button  
-- **FCC ID**: 2AXH6CREALITY-BOX  
+- **SoC**: MediaTek MT7688AN @ 580 MHz
+- **Flash**: BoyaMicro BY25Q128AS (16 MiB, SPI NOR)
+- **RAM**: 128 MiB DDR2 (Winbond W971GG6SB-25)
+- **Wireless**: MediaTek MT7628 802.11b/g/n
+- **Peripheral**: Genesys Logic GL850G 2 port USB 2.0 hub
+- **I/O**: 1x 10/100 Ethernet port, microSD SD-XC Class 10 slot, 4x LEDs, 2x USB 2.0 ports, micro USB input (for power only), reset button
+- **FCC ID**: 2AXH6CREALITY-BOX
 - **UART**: test pads: (square on silkscreen) 3V3, TX, RX, GND; default baudrate: 57600  
   
   </details>
@@ -40,19 +42,324 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
 </details>
 
 ------------------
+
+## Hardware Setup:
+
+There are some decisions you will have to make about how the box will be deployed but the way to set it up for an Octoprint installation is via a network cable connected to your main router. You will also need a microSD card, to expand the storage of the device, permanently inserted.
+
+<details>
+
+  <summary>Click to expand Firmware Installation</summary>
+
+  ## ⚠️ [Click Here For Firmware](https://github.com/shivajiva101/OctoWrt/releases/tag/5.15.137-r2) ⚠️
+
+## Flashing OpenWrt:  
+
+### If you're box is currently on stock firmware:
+
+Alternative Options:  
+**A. Standard option**
+
+1. Copy `cxsw_update.tar.bz2` from this release to the root of a FAT32 formatted microSD card.  
+2. Turn on the device, wait for it to start, then insert the card. The stock firmware reads the `install.sh` script from this archive and flashes the new OpenWrt image.  
+3. The box will create a wireless AP `OpenWrt`, you can now proceed to install setup
+
+**B. Through the Stock firmware UI interface (link)**
+
+**C. Using the `Recovery process`** see below  
+
+### If your box is already on OpenWrt and has the luci web UI reachable:
+
+Alternative Options:  
+**A. Flashing another Openwrt binary:** Access the luci web UI -> Go to System -> Upgrade -> Uncheck the box that sais `Save configs` -> Upload the SYSUPGRADE bin -> Flash  
+**B. Resetting the box** By holding the reset button for about 6 seconds the box will freshly reset the current OpenWrt firmware.  
+**C. Using the `Recovery process`** see below  
+
+
+## Recovery process  
+If the box is either on stock or Openwrt but unreachable (semi bricked) 
+⚠️ With the recovery process you can restore stock firmware or install/recover Openwrt firmware regardless of what's already on the box.
+
+**Recovering to Openwrt**  
+1. Rename the SYSUPGRADE bin to `root_uImage`  
+2. Put it on a fat32 formatted USB stick (not uSD card)  
+3. With the box powerd off, plug the USB stick in the box  
+4. Press and hold the reset button.  
+5. While holding the reset button power on the box and keep it pressed for about 6-10sec  
+6. Leds should start flashing while the box installs the firmware  
+7. Let it be for a couple of minutes until you see it on the network (`OctoWrt` WiFi AP )  
+
+**Restoring to Stock**  
+1. Extract the `root_uImage` file from the `cxsw_update.tar.bz2`   
+2 - 6. Same steps as above  
+7. You should see the creality AP
+
+
+</details>
+
+<p></p>
+<details>
+  <summary>Click to expand Install setup</summary>
+
+#### Connect to the wireless access point:
+
+<p align="left">
+<img src="img/Screenshot_1.png">
+</p>
+
+#### Login to Luci from a browser:
+
+Using a web browser enter `192.168.1.1:81` in the address bar, it will automatically redirect to the Luci login page. Credentials are root for the username and the password field left blank.
+
+<p align="left">
+<img src="img/Screenshot_2.png">
+</p>
+
+#### Select Network->Interfaces :
+
+Access the lan interface from the dropdown menu.
+
+<p align="left">
+<img src="img/Screenshot_4.png">
+</p>
+
+#### Edit the lan interface:
+
+Select edit to access the settings.
+
+<p align="left">
+<img src="img/Screenshot_5.png">
+</p>
+
+#### Change Protocol:
+
+Change the lan interface from Static address to DHCP client.
+
+<p align="left">
+<img src="img/Screenshot_6.png">
+</p>
+
+#### Confirm Protocol switch:
+
+Confirm by clicking the Switch Protocol button and then save.
+<p align="left">
+<img src="img/Screenshot_7.png">
+</p>
+
+#### Save & Apply unchecked:
+<p align="left">
+<img src="img/Screenshot_8.png">
+</p>
+
+#### ⚠️ Now disconnect from the wireless AP and connect via an ethernet cable to your main router or a hub connected to the main router!
+
+#### DHCP Client IP address:
+Check the main routers interface for the IP address it assigned the box and use it to access the Luci interface e.g. `192.168.0.100:81`
+<p align="left">
+<img src="img/Screenshot_9.png">
+</p>
+
+Login using root, leaving the password field blank, then access Services->Terminal and login as root.
+
+<p align="left">
+<img src="img/Screenshot_11_0.png">
+</p>
+
+<details>
+
+<summary>Terminal config</summary>
+<p></p>
+If the terminal cannot connect you need to change the interface for the terminal in the config tab
+<p></p>
+<p align="left">
+<img src="img/Screenshot_12_0.png">
+</p>
+
+#### Select interface:
+<p align="left">
+<img src="img/Screenshot_12_1.png">
+</p>
+
+#### Save & Apply:
+<p align="left">
+<img src="img/Screenshot_12_2.png">
+</p>
+</details>
+
+#### Connect:
+<p align="left">
+<img src="img/Screenshot_12_3.png">
+</p>
+
+#### You are now ready to proceed with step 1 of the Automatic or Manual Installation!
+
+</details>
+<p></p>
+ <details>
+
+  <summary>Click to expand Wireless AP post install setup</summary>
+
+  ## Wireless Access Point
+
+  If you plan to use the wireless AP for accessing OctoPrint & the Luci Admin interface post OctoPrint installation, rather than a network cable, you will need to change the lan interface back to a static IP for it to function correctly. This is due to the AP connectivity requiring the LAN interface to have: 
+  - a different subnet to the main router so the gateways are different.
+  - a DHCP server to assign IP addresses to that subnet.
+
+#### Access Network->Wireless
+<p align="left">
+<img src="img/Screenshot_13_0.png">
+</p>
+
+#### Scan for main router AP:
+<p align="left">
+<img src="img/Screenshot_11.png">
+</p>
+
+#### Scan in progress:
+<p align="left">
+<img src="img/Screenshot_12.png">
+</p>
+
+#### Selecting the main routers AP:
+<p align="left">
+<img src="img/Screenshot_13_1.png">
+</p>
+
+#### Connection details:
+Enter the main routers wifi password and lock the BSSID then save.
+<p align="left">
+<img src="img/Screenshot_14.png">
+</p>
+
+#### Save & Apply:
+<p></p>
+<p align="left">
+<img src="img/Screenshot_15.png">
+</p>
+
+#### Wifi connection to main router:
+<p align="left">
+<img src="img/Screenshot_13_2.png">
+</p>
+
+#### Access Network->Interfaces
+Now it is safe to return the lan interface to static IP with DHCP server.
+<p align="left">
+<img src="img/Screenshot_30.png">
+</p>
+
+#### Edit lan interface:
+<p align="left">
+<img src="img/Screenshot_31.png">
+</p>
+
+
+#### Change protocol to static:
+<p align="left">
+<img src="img/Screenshot_32.png">
+</p>
+
+#### Confirm switch:
+<p align="left">
+<img src="img/Screenshot_33.png">
+</p>
+
+#### Choose wireless access point IP address:
+If `192.168.1.1` is already in use by the main router, to avoid conflicts, change it to an available subnet e.g. `192.168.3.1` and set the netmask before saving.
+<p align="left">
+<img src="img/Screenshot_34.png">
+</p>
+
+#### Save, then Apply unchecked:
+<p align="left">
+<img src="img/Screenshot_35.png">
+</p>
+
+#### Disconnect the LAN cable and power cycle:
+When the box boots you can connect to the wireless AP.
+<p align="left">
+<img src="img/Screenshot_36.png">
+</p>
+
+
+#### Check the connection is assigned to the static IP:
+<p align="left">
+<img src="img/Screenshot_37.png">
+</p>
+
+Congratulations you are all done! You can access OctoPrint through the wireless AP on the default gateway of the connection.
+</details>
+
+## Automatic Installation:
+
+<details>
+  <summary>Expand steps</summary>
+  <p></p>
+
+---
+  ### ⚠️ You must complete the firmware and install setup before running these scripts! ⚠️
+---
+  #### 1. Execute extroot script:
+   Make sure you have a microSD card inserted, then copy and paste the commands below...
+  ```
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/scripts/1_format_extroot.sh
+  chmod +x 1_format_extroot.sh
+  ./1_format_extroot.sh
+
+  ```
+  #### 2. Execute install script:
+  <b>Important:</b> You *need* a stable internet connection for this to succeed.
+  If the script fails try using the manual installation method.
+  ```
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/scripts/2_octoprint_install.sh
+  chmod +x 2_octoprint_install.sh
+  ./2_octoprint_install.sh
+
+  ```
+
+
+  #### 3. Access Octoprint UI on port 5000
+
+  ```
+  http://box-ip:5000
+  ```
+
+  When prompted use the following **server commands**:
+
+    - Restart OctoPrint : `/etc/init.d/octoprint restart`
+    - Restart system : `reboot`
+    - Shutdown system : `poweroff`
+
+  For **webcam** support:
+
+  Services->MJPG-Streamer is the configuration interface. Modify that to change resolution, fps, user, pass etc.
+
+  Inside OctoPrint snapshot and stream fields add the following:
+  - Stream URL: `http://your-box-ip:8080/?action=stream`
+  - Snapshot URL: `http://your-box-ip:8080/?action=snapshot`
+  - ffmpeg binary path as: `/usr/bin/ffmpeg`
+
+
+</details>
+
 ## Manual Installation:
 
 <details>
-  <summary>Expand steps!</summary>
+  <summary>Expand steps</summary>
 
-## ⤵️ Preparing:
+---
+  ### ⚠️ You must complete the firmware and install setup before running these scripts! ⚠️
+---
+
+## ⤵️ 1. Prepare:
 
 <details>
   <summary>Expand steps!</summary>
   
-* **OpenWrt**: Make sure you have OpenWrt flashed to the box before proceeding. Follow guide from [here](https://github.com/shivajiva101/OctoWrt/tree/23.05.2-137/firmware/OpenWrt_snapshot) -> Once flashed setup a wired connection preferrably or a wifi connection so the hardware has internet access. This is necessary in order to fetch the required dependencies.
 
-* **Extroot**: First execute [this](https://github.com/shivajiva101/OctoWrt/blob/23.05.2-137/scripts/1_format_extroot.sh) script. Make sure you have a microsd card inserted as this step creates an extroot filesytem overlay on the card to expand the available space. Here's the code to fetch the script and run it.
+
+ #### 1. Extroot:
+  First execute [this](https://github.com/shivajiva101/OctoWrt/blob/23.05.2-137/scripts/1_format_extroot.sh) script. Make sure you have a microsd card inserted as this step creates an extroot filesytem overlay on the card to expand the available space. Here's the code to fetch the script and run it.
   
   ```
   cd ~
@@ -62,7 +369,8 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
 
   ```
   
-* **Swap**: Next step is to create a swapfile on the newly created overlay.
+#### 2. Swap:
+Next step is to create a swapfile on the newly created overlay fs.
 
   ```
   dd if=/dev/zero of=/overlay/swap.page bs=1M count=512;
@@ -71,6 +379,8 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
   mount -o remount,size=256M /tmp;
 
   ```
+#### 3. Mount:
+Create new rc.local file to mount swap file and tmp folder on boot
   ```
   rm /etc/rc.local;
   cat << "EOF" > /etc/rc.local
@@ -87,20 +397,22 @@ https://user-images.githubusercontent.com/40600040/128418449-79f69b98-8f81-4315-
   
 </details>
 
-## ⤵️ Installing:
+## ⤵️ 2. Install:
 
 <details>
   <summary>Expand steps!</summary>
+  <p></p>
+Now you can setup the correct package feeds. OpenWrt doesn't include WB01 hardware currently so there is a mismatch in the kernel version when using their repository for the core packages. Instead you are going to use the core packages created when this releases firmware was compiled and subsequently uploaded to this branch. This ensures all kernel modules match the kernel signature and can be installed through opkg, making it more extensible to other 3D printers.
 
 #### 1. Install OpenWrt dependencies:
-Now you can setup the correct package feeds. OpenWrt doesn't include WB01 hardware currently so there is a mismatch in the kernel version when using their repository for the core packages. Instead you are going to use the core packages created when this releases firmware was compiled and subsequently uploaded to this branch. This ensures all kernel modules match the kernel signature and can be installed through opkg, making it more extensible to other 3D printers.
+
+Update the package feeds.
 ```
 rm /etc/opkg/distfeeds.conf;
 wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/openwrt/distfeeds.conf -P /etc/opkg
-
 ```
-
-Next step is to update opkg from the new distfeeds.conf and install the dependencies
+---
+Next step is to update opkg from the new distfeeds.conf and install the dependencies.
 ```
 opkg update
 opkg install gcc make unzip htop wget-ssl git-http kmod-video-uvc luci-app-mjpg-streamer
@@ -108,10 +420,6 @@ opkg install v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-st
 
 ```
 ------------------------------
-
-* **Python 3**:
-
-⚠️ _It is recommended to use the python 3 approach since python 2 got deprecated on January 1st, 2020. However, if you want older versions of Octoprint, python 2 approach might be the only way._
 
 Install python 3 packages.
 ```
@@ -212,7 +520,7 @@ When prompted use thefollowing **server commands**:
 
 For **webcam** support:  
   
-  Use Luci Services->MJPG-Streamer to enable & modify resolution, fps, user, pass etc.  
+  `/etc/config/mjpg-streamer` is the configuration file. Modify that to change resolution, fps, user, pass etc.  
   Inside OctoPrint snapshot and stream fields add the following:
   - Stream URL: `http://your-box-ip:8080/?action=stream`  
   - Snapshot URL: `http://your-box-ip:8080/?action=snapshot` 
@@ -240,73 +548,8 @@ For **webcam** support:
 
 </details>
 
-## Automatic Installation:
-
-<details>
-  <summary>Expand steps!</summary>
-
-  #### 1. Flash Openwrt following guide [here:](https://github.com/shivajiva101/OctoWrt/tree/23.05.2-137/firmware/OpenWrt_snapshot)
-       Once flashed setup internet access on the box (either Wi-Fi client or wired connection)
-
- <details>
-  <summary>Expand Internet setup!</summary>
-
-- Make sure you've flahsed/sysupgraded latest `.bin` file from latest release.
-- Connect to the `OpenWrt` access point
-- Access LuCi web interface and log in on `192.168.1.1:81`
-- _(**optional** but recommended)_ Add a password to the `OctoWrt` access point: `Wireless` -> Under wireless overview `EDIT` the `OpenWrt` interface -> `Wireless Security` -> Choose an encryption -> set a password -> `Save` -> `Save & Apply`
-- _(**optional** but recommended)_ Add a password: `System` -> `Administration` -> `Router Password`
-- ❗If your home network subnet is on 1 (192.168.1.x), in order to avoid any ip conflicts, change the static ip of the box LAN from 192.168.1.1 to something like 192.168.3.1. To do that access the luci webinterface -> `Network` -> `Interfaces` and edit the static ip -> `Save` -> press the down arow on the Save&Apply button -> `Apply Unchecked`. You can now access luci on the new ip and continue configureing Client setup.
-- Connect as a client to your Internet router: `Network` -> `Wireless` -> `SCAN` -> `Join Network` -> check `Lock to BSSID` -> `Create/Assign Firewall zone` then under `custom` type `wwan` enter -> `Submit` -> `Save` -> `Dropdown arrow -> Apply Unchecked` -> `Apply Unchecked`
-- Connect back to your main internet router and find the new box's ip inside the `DHCP` list.
-- ❗  Access the terminal tab (`Services` -> `Terminal`) ❗ If terminal tab is not working go to `Config` tab and change `Interface` to the interface you are connecting through the box (your wireless router SSID for example) -> `Save & Apply`.
-- Proceed with step 2
-
-  </details>
-
-  #### 2. Execute extroot script:
-  ```
-  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/scripts/1_format_extroot.sh
-  chmod +x 1_format_extroot.sh
-  ./1_format_extroot.sh
-
-  ```
-  #### 3. Execute install script:
-  <b>Important:</b> You *need* a stable internet connection for this to succeed.
-  If the script fails try using the manual installation method.
-  ```
-  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/scripts/2_octoprint_install.sh
-  chmod +x 2_octoprint_install.sh
-  ./2_octoprint_install.sh
-
-  ```
-
-
-  #### 4. Access Octoprint UI on port 5000
-
-  ```
-  http://box-ip:5000
-  ```
-
-  When prompted use the following **server commands**:
-
-    - Restart OctoPrint : `/etc/init.d/octoprint restart`
-    - Restart system : `reboot`
-    - Shutdown system : `poweroff`
-
-  For **webcam** support:
-
-  Use Luci Services->MJPG-Streamer to enable & modify resolution, fps, user, pass etc.
-
-  Inside OctoPrint snapshot and stream fields add the following:
-  - Stream URL: `http://your-box-ip:8080/?action=stream`
-  - Snapshot URL: `http://your-box-ip:8080/?action=snapshot`
-  - ffmpeg binary path as: `/usr/bin/ffmpeg`
-
-
-</details>
-
 ## 🔝 Credits:
 
-<img width=20 align=center src="https://user-images.githubusercontent.com/40600040/128488418-c703c383-1835-49a0-aa41-eadee0671ab7.png">  **Gina and co.** for creating and developping [OctoPrint](https://github.com/OctoPrint/OctoPrint)  
+<img width=20 align=center src="https://user-images.githubusercontent.com/40600040/128488418-c703c383-1835-49a0-aa41-eadee0671ab7.png">  **Gina and co.** for creating and developing [OctoPrint](https://github.com/OctoPrint/OctoPrint)  
 <img width=20 align=center src="https://user-images.githubusercontent.com/40600040/128488057-52b688f7-25d5-46e1-9ac8-bb5309384d98.png">  **George** a.k.a [figgyc](https://github.com/figgyc) for porting OpenWrt to this device  
+<img width=20 align=center src="https://user-images.githubusercontent.com/40600040/128488057-52b688f7-25d5-46e1-9ac8-bb5309384d98.png">  **ihrapsa** for creating and developing [OctoWrt](https://github.com/ihrapsa/OctoWrt) without their effort this fork would not exist!
