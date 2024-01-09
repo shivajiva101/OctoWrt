@@ -550,6 +550,10 @@ For **webcam** support:
 
 ## 🔝 Credits:
 
-<img width=20 align=center src="https://user-images.githubusercontent.com/40600040/128488418-c703c383-1835-49a0-aa41-eadee0671ab7.png">  **Gina and co.** for creating and developing [OctoPrint](https://github.com/OctoPrint/OctoPrint)  
-<img width=20 align=center src="https://user-images.githubusercontent.com/40600040/128488057-52b688f7-25d5-46e1-9ac8-bb5309384d98.png">  **George** a.k.a [figgyc](https://github.com/figgyc) for porting OpenWrt to this device  
-<img width=20 align=center src="https://user-images.githubusercontent.com/40600040/128488057-52b688f7-25d5-46e1-9ac8-bb5309384d98.png">  **ihrapsa** for creating and developing [OctoWrt](https://github.com/ihrapsa/OctoWrt) without their effort this fork would not exist!
+<img width=20 align=center src="https://avatars.githubusercontent.com/u/5982294?s=48&v=4">  **Gina and co.** for creating and developing [OctoPrint](https://github.com/OctoPrint/OctoPrint)
+
+<img width=20 align=center src="https://avatars.githubusercontent.com/u/8902415?v=4">  **George** a.k.a [figgyc](https://github.com/figgyc) for porting OpenWrt to this device
+
+<img width=20 align=center src="https://avatars.githubusercontent.com/u/40600040?v=4">  **ihrapsa** for creating and developing [OctoWrt](https://github.com/ihrapsa/OctoWrt) without their efforts this fork would not exist!
+
+<img width=20 align=center src="https://avatars.githubusercontent.com/u/26207806?v=4">  **chepo92** for the solution to installing [OctoPrint v1.9.3](https://github.com/chepo92/OctoPrint/tree/no-argon) on the creality box!
