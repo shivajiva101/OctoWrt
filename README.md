@@ -51,7 +51,7 @@ There are some decisions you will have to make about how the box will be deploye
 
   <summary>Click to expand Firmware Installation</summary>
 
-  ## ⚠️ [Click Here For Firmware](https://github.com/shivajiva101/OctoWrt/releases/tag/5.15.137-r2) ⚠️
+  ## ⚠️ [Click Here For Firmware](https://github.com/shivajiva101/KlipperWrt/tree/v3.3/Firmware/OpenWrt_snapshot) ⚠️
 
 ## Flashing OpenWrt:  
 
@@ -302,7 +302,7 @@ Congratulations you are all done! You can access OctoPrint through the wireless 
   #### 1. Execute extroot script:
    Make sure you have a microSD card inserted, then copy and paste the commands below...
   ```
-  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/scripts/1_format_extroot.sh
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.3-150/scripts/1_format_extroot.sh
   chmod +x 1_format_extroot.sh
   ./1_format_extroot.sh
 
@@ -311,7 +311,7 @@ Congratulations you are all done! You can access OctoPrint through the wireless 
   <b>Important:</b> You *need* a stable internet connection for this to succeed.
   If the script fails try using the manual installation method.
   ```
-  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/scripts/2_octoprint_install.sh
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.3-150/scripts/2_octoprint_install.sh
   chmod +x 2_octoprint_install.sh
   ./2_octoprint_install.sh
 
@@ -359,11 +359,11 @@ Congratulations you are all done! You can access OctoPrint through the wireless 
 
 
  #### 1. Extroot:
-  First execute [this](https://github.com/shivajiva101/OctoWrt/blob/23.05.2-137/scripts/1_format_extroot.sh) script. Make sure you have a microsd card inserted as this step creates an extroot filesytem overlay on the card to expand the available space. Here's the code to fetch the script and run it.
+  First execute [this](https://github.com/shivajiva101/OctoWrt/blob/23.05.3-150/scripts/1_format_extroot.sh) script. Make sure you have a microsd card inserted as this step creates an extroot filesytem overlay on the card to expand the available space. Here's the code to fetch the script and run it.
   
   ```
   cd ~
-  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/scripts/1_format_extroot.sh
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.3-150/scripts/1_format_extroot.sh
   chmod +x 1_format_extroot.sh
   ./1_format_extroot.sh
 
@@ -406,16 +406,12 @@ Now you can setup the correct package feeds. OpenWrt doesn't include WB01 hardwa
 
 #### 1. Install OpenWrt dependencies:
 
-Update the package feeds.
-```
-rm /etc/opkg/distfeeds.conf;
-wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/openwrt/distfeeds.conf -P /etc/opkg
-```
 ---
-Next step is to update opkg from the new distfeeds.conf and install the dependencies.
+First step is to update opkg and install the dependencies.
 ```
 opkg update
-opkg install gcc make unzip htop wget-ssl git-http kmod-video-uvc luci-app-mjpg-streamer
+opkg install --force-overwrite gcc
+opkg install make unzip htop wget-ssl git-http kmod-video-uvc luci-app-mjpg-streamer
 opkg install v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-streamer-www ffmpeg
 
 ```
@@ -436,9 +432,9 @@ pip install future regex sgmllib3k
 #### 2. Fetch Octoprint:
 Next step is cloning OctoPrint and then patching it to remove the argon2-cffi dependency that OpenWrt cannot fulfil.
 ```
-git clone --depth 1 -b 1.9.3 https://github.com/OctoPrint/OctoPrint.git src
+git clone --depth 1 -b 1.10.1 https://github.com/OctoPrint/OctoPrint.git src
 cd src
-wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/octoprint/noargon2.patch
+wget https://github.com/shivajiva101/OctoWrt/raw/23.05.3-150/octoprint/noargon2.patch
 git apply noargon2.patch
 
 ```
@@ -455,6 +451,7 @@ pip install .
     <summary> Expand </summary>
   
   ```
+  rm -f /etc/init.d/octoprint
   cat << "EOF" > /etc/init.d/octoprint
   #!/bin/sh /etc/rc.common
   # Copyright (C) 2009-2014 OpenWrt.org

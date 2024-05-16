@@ -1,26 +1,35 @@
-From 90eed828652aff033fd07698fda75b51e1dbaf37 Mon Sep 17 00:00:00 2001
-Message-Id: <90eed828652aff033fd07698fda75b51e1dbaf37.1701814941.git.shivajiva101@hotmail.com>
+From c6ea57d8d4668121e42d69ad13552de06cae9826 Mon Sep 17 00:00:00 2001
+Message-Id: <c6ea57d8d4668121e42d69ad13552de06cae9826.1716076893.git.shivajiva101@hotmail.com>
 From: shivajiva101 <shivajiva101@hotmail.com>
-Date: Tue, 5 Dec 2023 22:22:03 +0000
-Subject: [PATCH] Removes argon2_cffi dependency
+Date: Fri, 17 May 2024 22:17:42 +0100
+Subject: [PATCH] noargon
 
 ---
- setup.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ setup.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/setup.py b/setup.py
-index dcc0d11b3..f6757ad43 100644
+index 6a613d804..afab78dc6 100644
 --- a/setup.py
 +++ b/setup.py
-@@ -39,7 +39,7 @@ bundled_plugins = [
-     "OctoPrint-PiSupport>=2023.5.24",
+@@ -35,7 +35,7 @@ bundled_plugins = [
+     "OctoPrint-PiSupport>=2023.10.10",
  ]
  core_deps = [
--    "argon2_cffi>=21.3.0,<22",
-+    #"argon2_cffi>=21.3.0,<22",
+-    "argon2-cffi>=23.1.0",
++    # "argon2-cffi>=23.1.0", # ramips doesn't support!
      "Babel>=2.12.1,<2.13",  # breaking changes can happen on minor version increases
      "cachelib>=0.10.2,<0.11",
-     "Click>=8.1.3,<9",
---
+     "Click>=8.1.7,<9",
+@@ -73,7 +73,7 @@ core_deps = [
+     "websocket-client==1.6.1",  # later versions require Python 3.8+, breaking changes can happen on patch version increases, changelog incomplete
+     "werkzeug>=2.2.3,<2.3",  # breaking changes can happen on minor version increases
+     "wrapt>=1.15,<1.16",
+-    "zeroconf~=0.127",  # breaking changes can happen on minor version increases (despite semantic versioning)
++    "zeroconf==0.39.4",  # final version to include universal wheel, later takes ages to compiles on rpi, piwheels has no wheels for latest either
+     "zipstream-ng>=1.7.1,<2.0.0",
+ ]
+ vendored_deps = [
+-- 
 2.39.2
 

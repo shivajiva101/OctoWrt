@@ -1,34 +1,13 @@
 #!/bin/sh
+if mount | grep "/dev/mmcblk0p1 on /overlay type ext4" > /dev/null; then
 
 echo " "
-echo "   ########################################"
-echo "   ## Did you execute 1_format.sh first? ##"
-echo "   ########################################"
 echo " "
-read -p "Press [ENTER] if YES ...or [ctrl+c] to exit"
-
-
 echo " "
-echo "This script will download and install all packages from the internet"
-echo " "
-echo "   #####################################"
-echo "   ## Make sure extroot is enabled... ##"
-echo "   #####################################"
-echo " "
-read -p "Press [ENTER] to check if extroot is enabled ...or [ctrl+c] to exit"
-
-df -h;
-
-echo " "
-echo "   ############################################"
-echo "   ## Is /dev/mmcblk0p1 mounted on /overlay? ##"
-echo "   ############################################"
-echo " "
-read -p "Press [ENTER] if YES... or [ctrl+c] to exit"
-
+echo "This script will download and install ALL packages from the internet"
 echo " "
 echo "   ######################################################"
-echo "   ## Make sure you have a stable Internet connection! ##"
+echo "   ## Make sure you have a stable internet connection! ##"
 echo "   ######################################################"
 echo " "
 read -p "Press [ENTER] to Continue ...or [ctrl+c] to exit"
@@ -64,12 +43,9 @@ echo "   ### Installing dependencies ###"
 echo "   ###############################"
 echo " "
 
-echo "Updating distfeeds.conf"
-rm /etc/opkg/distfeeds.conf;
-wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/openwrt/distfeeds.conf -P /etc/opkg
-
 opkg update
-opkg install gcc make unzip htop wget-ssl git-http kmod-video-uvc luci-app-mjpg-streamer v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-streamer-www ffmpeg
+opkg install --force-overwrite gcc;
+opkg install make unzip htop wget-ssl git-http kmod-video-uvc luci-app-mjpg-streamer v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-streamer-www ffmpeg
 
 opkg install python3 python3-pip python3-dev python3-psutil python3-yaml python3-netifaces
 opkg install python3-pillow python3-tornado python3-markupsafe
@@ -89,13 +65,21 @@ echo " eventually complete!"
 echo " "
 
 echo "Cloning source..."
-git clone --depth 1 -b 1.9.3 https://github.com/OctoPrint/OctoPrint.git src
+git clone --depth 1 -b 1.10.1 https://github.com/OctoPrint/OctoPrint.git src
 cd src
-wget https://github.com/shivajiva101/OctoWrt/raw/23.05.2-137/octoprint/noargon2.patch
+wget https://github.com/shivajiva101/OctoWrt/raw/23.05.3-150/octoprint/noargon2.patch
 git apply noargon2.patch
 echo "Starting pip install..."
 pip install .
 cd ~
+
+echo " "
+echo "   ###################"
+echo "   ### Hostname/ip ###"
+echo "   ###################"
+echo " "
+
+opkg install avahi-daemon-service-ssh avahi-daemon-service-http;
 
 echo " "
 echo "   ##################################"
@@ -103,6 +87,7 @@ echo "   ### Creating Octoprint service ###"
 echo "   ##################################"
 echo " "
 
+rm -f /etc/init.d/octoprint
 cat << "EOF" > /etc/init.d/octoprint
 #!/bin/sh /etc/rc.common
 # Copyright (C) 2009-2014 OpenWrt.org
@@ -134,3 +119,7 @@ echo " "
 read -p "Press [ENTER] to reboot...or [ctrl+c] to exit"
 
 reboot
+
+else
+echo "Run the first script before attempting to run this one!"
+fi
