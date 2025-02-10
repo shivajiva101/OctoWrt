@@ -29,7 +29,7 @@ extroot(){
 	echo " "
 	sleep 1
 	echo -ne 'Making extroot...     [=>                                ](6%)\r'
-	DEVICE="$(sed -n -e "/\s\/overlay\s.*$/s///p" /etc/mtab)";
+	DEVICE=$(awk '$2 == "/overlay" {print $1}' /etc/mtab);
 	echo -ne 'Making extroot...     [===>                              ](12%)\r'
 	uci -q delete fstab.rwm;
 	echo -ne 'Making extroot...     [=====>                            ](18%)\r'
