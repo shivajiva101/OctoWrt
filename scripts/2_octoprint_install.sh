@@ -12,6 +12,9 @@ echo "   ######################################################"
 echo " "
 read -p "Press [ENTER] to Continue ...or [ctrl+c] to exit"
 
+FILE=/overlay/swap.page
+
+if [ ! -f "$FILE" ]; then
 echo " "
 echo "   #################"
 echo "   ###   SWAP    ###"
@@ -37,6 +40,8 @@ mount -o remount,size=256M /tmp
 exit 0
 EOF
 
+fi
+
 echo " "
 echo "   ###############################"
 echo "   ### Installing dependencies ###"
@@ -60,14 +65,14 @@ echo "   ############################"
 echo " "
 echo " This is going to take a while... "
 echo " No seriously, it will look like it's frozen"
-echo " for extended periods of time but it will"
+echo " for extended periods of time, but it will"
 echo " eventually complete!"
 echo " "
 
 echo "Cloning source..."
 git clone --depth 1 -b 1.10.1 https://github.com/OctoPrint/OctoPrint.git src
 cd src
-wget https://github.com/shivajiva101/OctoWrt/raw/23.05.3-150/octoprint/noargon2.patch
+wget https://github.com/shivajiva101/OctoWrt/raw/23.05.5-167/octoprint/noargon2.patch
 git apply noargon2.patch
 echo "Starting pip install..."
 pip install .
