@@ -19,7 +19,7 @@ Alternative Options:
 ### If your box is already on OpenWrt and has the luci web UI reachable:
 
 Alternative Options:  
-**A. Flashing another Openwrt binary:** Access the luci web UI -> Go to System -> Upgrade -> Uncheck the box that sais `Save configs` -> Upload the SYSUPGRADE bin -> Flash  
+**A. Flashing another Openwrt binary:** Access the luci web UI -> Go to System -> Upgrade -> Uncheck the box that says `Save configs` -> Upload the SYSUPGRADE bin -> Flash  
 **B. Resetting the box** By holding the reset button for about 6 seconds the box will freshly reset the current OpenWrt firmware.  
 **C. Using the `Recovery process`** see below  
 
@@ -35,7 +35,7 @@ If the box is either on stock or Openwrt but unreachable (semi bricked)
 4. Press and hold the reset button.  
 5. While holding the reset button power on the box and keep it pressed for about 6-10sec  
 6. Leds should start flashing while the box installs the firmware  
-7. Let it be for a couple of minutes until you see it on the network (`OctoWrt` WiFi AP )  
+7. Let it be for a few minutes until you see it on the network (`OctoWrt` WiFi AP )  
 
 **Restoring to Stock**  
 1. Extract the `root_uImage` file from the `cxsw_update.tar.bz2`   
