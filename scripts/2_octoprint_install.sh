@@ -70,7 +70,7 @@ echo " eventually complete!"
 echo " "
 
 echo "Cloning source..."
-git clone --depth 1 -b 1.10.1 https://github.com/OctoPrint/OctoPrint.git src
+git clone --depth 1 -b 1.10.3 https://github.com/OctoPrint/OctoPrint.git src
 cd src
 wget https://github.com/shivajiva101/OctoWrt/raw/23.05.5-167/octoprint/noargon2.patch
 git apply noargon2.patch
