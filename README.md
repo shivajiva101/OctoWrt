@@ -51,7 +51,7 @@ There are some decisions you will have to make about how the box will be deploye
 
   <summary>Click to expand Firmware Installation</summary>
 
-  ## ⚠️ [Click Here For Firmware](https://github.com/shivajiva101/KlipperWrt/tree/v3.3/Firmware/OpenWrt_snapshot) ⚠️
+  ## ⚠️ [Click Here For Firmware](https://github.com/shivajiva101/KlipperWrt/tree/v3.5/Firmware/OpenWrt_snapshot) ⚠️
 
 ## Flashing OpenWrt:  
 
@@ -302,7 +302,7 @@ Congratulations you are all done! You can access OctoPrint through the wireless 
   #### 1. Execute extroot script:
    Make sure you have a microSD card inserted, then copy and paste the commands below...
   ```
-  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.3-150/scripts/1_format_extroot.sh
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.5-167/scripts/1_format_extroot.sh
   chmod +x 1_format_extroot.sh
   ./1_format_extroot.sh
 
@@ -311,7 +311,7 @@ Congratulations you are all done! You can access OctoPrint through the wireless 
   <b>Important:</b> You *need* a stable internet connection for this to succeed.
   If the script fails try using the manual installation method.
   ```
-  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.3-150/scripts/2_octoprint_install.sh
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.5-167/scripts/2_octoprint_install.sh
   chmod +x 2_octoprint_install.sh
   ./2_octoprint_install.sh
 
@@ -359,11 +359,11 @@ Congratulations you are all done! You can access OctoPrint through the wireless 
 
 
  #### 1. Extroot:
-  First execute [this](https://github.com/shivajiva101/OctoWrt/blob/23.05.3-150/scripts/1_format_extroot.sh) script. Make sure you have a microsd card inserted as this step creates an extroot filesytem overlay on the card to expand the available space. Here's the code to fetch the script and run it.
+  First execute [this](https://github.com/shivajiva101/OctoWrt/blob/23.05.5-167/scripts/1_format_extroot.sh) script. Make sure you have a microsd card inserted as this step creates an extroot filesytem overlay on the card to expand the available space. Here's the code to fetch the script and run it.
   
   ```
   cd ~
-  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.3-150/scripts/1_format_extroot.sh
+  wget https://github.com/shivajiva101/OctoWrt/raw/23.05.5-167/scripts/1_format_extroot.sh
   chmod +x 1_format_extroot.sh
   ./1_format_extroot.sh
 
@@ -434,7 +434,7 @@ Next step is cloning OctoPrint and then patching it to remove the argon2-cffi de
 ```
 git clone --depth 1 -b 1.10.1 https://github.com/OctoPrint/OctoPrint.git src
 cd src
-wget https://github.com/shivajiva101/OctoWrt/raw/23.05.3-150/octoprint/noargon2.patch
+wget https://github.com/shivajiva101/OctoWrt/raw/23.05.5-167/octoprint/noargon2.patch
 git apply noargon2.patch
 
 ```
@@ -509,7 +509,7 @@ Access Octoprint UI on port 5000
 http://box-ip:5000
 ```
   
-When prompted use thefollowing **server commands**:
+When prompted use the following **server commands**:
 
   - Restart OctoPrint : `/etc/init.d/octoprint restart`  
   - Restart system : `reboot`  
