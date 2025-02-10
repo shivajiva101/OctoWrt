@@ -1,4 +1,4 @@
-## ⚠️ [Click Here For Firmware](https://github.com/shivajiva101/KlipperWrt/tree/v3.3/Firmware/OpenWrt_snapshot) ⚠️
+## ⚠️ [Click Here For Firmware](https://github.com/shivajiva101/KlipperWrt/tree/v3.5/Firmware/OpenWrt_snapshot) ⚠️
 
 ## Flashing OpenWrt:  
 
