@@ -52,11 +52,11 @@ opkg update
 opkg install --force-overwrite gcc;
 opkg install make unzip htop wget-ssl git-http kmod-video-uvc luci-app-mjpg-streamer v4l-utils mjpg-streamer-input-uvc mjpg-streamer-output-http mjpg-streamer-www ffmpeg
 
-opkg install python3 python3-pip python3-dev python3-psutil python3-yaml python3-netifaces
-opkg install python3-pillow python3-tornado python3-markupsafe
+opkg install python3 python3-pip python3-dev python3-yaml python3-netifaces
+opkg install python3-pillow python3-markupsafe
 pip install --upgrade setuptools
 pip install --upgrade pip
-pip install future regex sgmllib3k
+pip install regex sgmllib3k
 
 echo " "
 echo "   ############################"
