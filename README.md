@@ -432,7 +432,7 @@ pip install future regex sgmllib3k
 #### 2. Fetch Octoprint:
 Next step is cloning OctoPrint and then patching it to remove the argon2-cffi dependency that OpenWrt cannot fulfil.
 ```
-git clone --depth 1 -b 1.10.1 https://github.com/OctoPrint/OctoPrint.git src
+git clone --depth 1 -b 1.10.3 https://github.com/OctoPrint/OctoPrint.git src
 cd src
 wget https://github.com/shivajiva101/OctoWrt/raw/23.05.5-167/octoprint/noargon2.patch
 git apply noargon2.patch
