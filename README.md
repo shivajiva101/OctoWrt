@@ -402,7 +402,7 @@ Create new rc.local file to mount swap file and tmp folder on boot
 <details>
   <summary>Expand steps!</summary>
   <p></p>
-Now you can setup the correct package feeds. OpenWrt doesn't include WB01 hardware currently so there is a mismatch in the kernel version when using their repository for the core packages. Instead you are going to use the core packages created when this releases firmware was compiled and subsequently uploaded to this branch. This ensures all kernel modules match the kernel signature and can be installed through opkg, making it more extensible to other 3D printers.
+OpenWrt doesn't include support for WB01 hardware currently so this is a patched snapshot build with access to the core packages compiled with the firmware release. This ensures all kernel modules match the kernel signature and can be installed through opkg, making it more extensible to other 3D printers. 
 
 #### 1. Install OpenWrt dependencies:
 
@@ -496,7 +496,7 @@ reboot
 ```
 
 ▶️ _**Note!**_  
-_Booting the latest versions of OctoPrint takes a while (~5 minutes) and even longer on the first boot after installation when OctoPrint will configure itself. Once booted however, everything works as expected. If you care that much about this you can install older versions (v1.0.0 for example) that are much lighter but are not plugin enabled. Only Temps, Control, Webcam and Gcode preview._
+_Booting the latest versions of OctoPrint takes a while (~5 minutes) and even longer on the first boot after installation when OctoPrint will configure itself. Once booted however, everything works as expected.
   
 #### 8. First setup
   
